@@ -1,22 +1,22 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from sqlmodel import Session
-from database import create_db_and_tables
-from routers import media
+from sqlmodel import Session, SQLModel
+from .database import create_db_and_tables, engine
+from .routers import media
 
-app = FastAPI(title="Osvaldxy Portfolio")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    SQLModel.metadata.create_all(engine)
+    yield
 
-app.mount("/media", StaticFiles(directory="uploads"), name="media")
+
+app = FastAPI(lifespan=lifespan, title="Osvaldxy Portfolio")
 
 app.include_router(media.router, prefix="/api/media", tags=["Media"])
 
 @app.get("/")
 def health_check():
-    return {"status": "backend is operational"}
-
-app.on_event("startup")
-def on_startup():
-    create_db_and_tables()
-        
+    return {"status": "backend is operational"}        
 
 
