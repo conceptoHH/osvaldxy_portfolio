@@ -6,13 +6,28 @@ class User(SQLModel, table=True):
     hashed_password: str
     is_admin: bool = Field(default=False)
     
-class Media(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+#Media model and DTOs
+
+class MediaBase(SQLModel):
     name_media: str
     type_media: str
     slug: str
-    path_url: str
+    path_url: str 
 
+class Media(MediaBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+
+class MediaCreate(MediaBase):
+    pass
+
+class MediaReturn(MediaBase):
+    id: int
+
+class MediaUpdate(SQLModel):
+    name_media: str | None = None
+    type_media: str | None = None
+    slug: str | None = None
+    path_url: str | None = None
 
 class Album(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
