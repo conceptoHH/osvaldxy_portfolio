@@ -1,4 +1,3 @@
-from fileinput import filename
 import shutil
 import os
 from sqlmodel import Session, select
@@ -104,15 +103,18 @@ def delete_image(*, session: Session = Depends(get_session), id: int):
     #Deleting from disk
 
     relative_path = media_db.path_url.replace("/static", "/uploads")
-    abs_path = os.path.abspath("osvaldxy_back/".join(relative_path))
+    print(relative_path)
+    abs_path = os.path.abspath("osvaldxy_back"+relative_path)
+    print(abs_path)
     
     try:
         os.remove(abs_path)
-    except FileNotFoundError:
-        pass
+    except FileNotFoundError as e:
+        raise e
+
     #commiting to db
     session.delete(media_db)
     session.commit()
-    return {"detail": "Media succesfully deleted"}
+    return None
 
 
