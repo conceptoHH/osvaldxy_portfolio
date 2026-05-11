@@ -8,13 +8,19 @@ from ..models import *
 
 router = APIRouter()
 
-@router.get("/") #response_model=list[MediaReturn])
-def get_all_media():
-    return {"Hello":" from media controller"}
+@router.get("/", response_model=list[MediaReturn])
+def get_all_media(*, session: Session = Depends(get_session)):
+    media = session.exec(select(Media)).all()
+    if not media:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'No media found')
+    return media
 
-@router.get("/{slug}")
-def get_detail_media():
-    pass
+@router.get("/{slug}", response_model=MediaReturn)
+def get_detail_media(*, session: Session =  Depends(get_session), slug: str):
+    media = session.exec(select(Media).where(Media.slug == slug)).one_or_none()
+    if not media:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'No media with this slug: {slug} found')
+    return media
     
 @router.post("/", status_code=status.HTTP_201_CREATED)
 def post_image(*, session: Session = Depends(get_session), file: UploadFile):
@@ -71,12 +77,42 @@ def post_image(*, session: Session = Depends(get_session), file: UploadFile):
     session.refresh(db_media)
     return db_media
 
-@router.patch("/{id}")
-def modify_image():
-    pass
+@router.patch("/{id}", response_model=MediaReturn)
+def modify_image(*, session: Session =  Depends(get_session), id: int, media: MediaUpdate):
 
-@router.delete("/{id}")
-def delete_image():
-    pass
+    media_get_db = session.get(Media, id)
+    
+    if not media_get_db:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'No media with this id: {id} found')
+
+
+    media_update_data = media.model_dump(exclude_unset=True)
+    media_get_db.sqlmodel_update(media_update_data)
+    session.add(media_get_db)
+    session.commit()
+    session.refresh(media_get_db)
+    
+    return media_get_db
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_image(*, session: Session = Depends(get_session), id: int):
+    media_db = session.get(Media, id)
+    
+    if not media_db:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'No media with this id: {id} found')
+
+    #Deleting from disk
+
+    relative_path = media_db.path_url.replace("/static", "/uploads")
+    abs_path = os.path.abspath("osvaldxy_back/".join(relative_path))
+    
+    try:
+        os.remove(abs_path)
+    except FileNotFoundError:
+        pass
+    #commiting to db
+    session.delete(media_db)
+    session.commit()
+    return {"detail": "Media succesfully deleted"}
 
 

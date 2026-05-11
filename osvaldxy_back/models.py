@@ -26,8 +26,6 @@ class MediaReturn(MediaBase):
 class MediaUpdate(SQLModel):
     name_media: str | None = None
     type_media: str | None = None
-    slug: str | None = None
-    path_url: str | None = None
 
 class Album(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
