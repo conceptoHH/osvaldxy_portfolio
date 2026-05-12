@@ -103,9 +103,7 @@ def delete_image(*, session: Session = Depends(get_session), id: int):
     #Deleting from disk
 
     relative_path = media_db.path_url.replace("/static", "/uploads")
-    print(relative_path)
     abs_path = os.path.abspath("osvaldxy_back"+relative_path)
-    print(abs_path)
     
     try:
         os.remove(abs_path)
