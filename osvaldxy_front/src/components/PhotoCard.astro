@@ -1,0 +1,24 @@
+---
+// 1. Server-side JavaScript
+// We tell this component to expect a 'media' object passed down from the parent page
+const { media } = Astro.props;
+
+// Construct the full URL to your FastAPI server
+const backendUrl = "http://127.0.0.1:8000"; 
+---
+
+<!-- 2. HTML & Tailwind Template -->
+<div class="bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
+    <!-- Display the image. We combine the backend URL with the path_url from your database -->
+    <img 
+        src={`${backendUrl}${media.path_url}`} 
+        alt={media.name_media} 
+        class="w-full h-64 object-cover"
+    />
+    
+    <!-- Photo Details -->
+    <div class="p-4">
+        <h3 class="font-bold text-lg text-gray-800">{media.name_media}</h3>
+        <p class="text-sm text-gray-500 capitalize">{media.type_media}</p>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+---
+// src/pages/albums/[slug].astro
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PhotoCard from '../../components/PhotoCard.astro';
+
+
+export async function getStaticPaths() {
+    // Fetch all albums from your backend
+    const response = await fetch('http://127.0.0.1:8000/api/album');
+    const allAlbums = await response.json();
+
+    // Map through the database records and tell Astro what the 'slug' parameter should be
+    return allAlbums.map((album) => {
+        return {
+            params: { slug: album.slug }
+        };
+    });
+}
+
+// 1. Grab the slug from the URL
+const { slug } = Astro.params;
+
+// 2. Fetch the specific album using the slug
+// NOTE: Your backend needs a GET /albums/{slug} route that returns the album AND its media_items!
+const response = await fetch(`http://127.0.0.1:8000/api/album/${slug}`);
+
+// If the backend returns a 404, we can redirect or show an error
+if (response.status === 404) {
+  return Astro.redirect('/404');
+}
+
+const album = await response.json();
+---
+
+<BaseLayout title={album.name_album}>
+    <div class="max-w-6xl mx-auto">
+        <!-- Back Button -->
+        <a href="/albums" class="inline-block mb-6 text-blue-600 hover:text-blue-800 font-semibold">
+            &larr; Back to Albums
+        </a>
+
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-2">{album.name_album}</h1>
+        <p class="text-gray-500 mb-8">Viewing photos in this album</p>
+        
+        <!-- The Grid Layout for this specific album's photos -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <!-- We assume your AlbumWithMediaReturn DTO provides an array called media_items -->
+            {album.media_items && album.media_items.length > 0 ? (
+                album.media_items.map((mediaItem) => (
+                    <PhotoCard media={mediaItem} />
+                ))
+            ) : (
+                <div class="col-span-full text-center py-12 text-gray-500">
+                    <p>This album is currently empty.</p>
+                </div>
+            )}
+        </div>
+    </div>
+</BaseLayout>

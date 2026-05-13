@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PhotoCard from '../components/PhotoCard.astro';
+
+const response = await fetch('http://127.0.0.1:8000/api/media');
+const allMedia = await response.json();
+---
+
+<BaseLayout title="Photo Gallery">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-8">Images</h1>
+
+        <!-- Grid Layout -->
+        <!-- The Grid Layout -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <!-- Check if it is an array first -->
+            {Array.isArray(allMedia) ? (
+                allMedia.map((mediaItem) => (
+                    <PhotoCard media={mediaItem} />
+                ))) : (
+                <div class="col-span-full text-center py-12 text-gray-500">
+                    <p>No photos have been uploaded yet.</p>
+                </div>
+            )}
+        </div>
+    </div>
+</BaseLayout>
+

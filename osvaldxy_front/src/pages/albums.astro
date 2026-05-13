@@ -1,0 +1,41 @@
+---
+// src/pages/albums.astro
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Fetch all albums from your FastAPI backend
+const response = await fetch('http://127.0.0.1:8000/api/album');
+const allAlbums = await response.json();
+
+// Note: You'll need to make sure your backend has a GET /albums route!
+const backendUrl = "http://127.0.0.1:8000";
+---
+
+<BaseLayout title="My Albums">
+    <div class="max-w-6xl mx-auto">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-8 text-center">Albums</h1>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            {Array.isArray(allAlbums) && allAlbums.length > 0 ? (
+                allAlbums.map((album) => (
+                    <a href={`/albums/${album.slug}`} class="group block">
+                        <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+                            <!-- We assume your album has a cover_media_id or similar, but for now let's just show a placeholder or the cover string -->
+                            <div class="h-48 bg-gray-200 flex items-center justify-center overflow-hidden">
+                                {album.cover ? (
+                                    <img src={`${backendUrl}${album.cover}`} alt={album.name_album} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                ) : (
+                                    <span class="text-gray-400">No Cover Image</span>
+                                )}
+                            </div>
+                            <div class="p-4 text-center">
+                                <h2 class="text-xl font-bold text-gray-800">{album.name_album}</h2>
+                            </div>
+                        </div>
+                    </a>
+                ))
+            ) : (
+                <p class="text-center col-span-full text-gray-500">No albums created yet.</p>
+            )}
+        </div>
+    </div>
+</BaseLayout>

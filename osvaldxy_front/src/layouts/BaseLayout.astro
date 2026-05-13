@@ -1,0 +1,32 @@
+---
+import '../styles/global.css';
+//Props so each page could have a unique title
+const {title = "Osvaldxy"} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{title}</title>
+    </head>
+    <body class="bg-gray-50 min-h-screen">
+        <nav class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="/" class="font-bold text-xl text-blue-600">Osvaldxy</a>
+            <div class="space-x-4">
+                <a href="/gallery" class="text-gray-600 hover:text-blue">Gallery</a>
+                <a href="/albums" class="text-gray-600 hover:text-blue">Albums</a>        
+            </div>
+            
+        </nav>
+
+        <main>
+            <slot />
+        </main>
+
+        <footer class="text-center py-10 text-grey-400 text-sm">
+            &copy; 2026 Derechos reservados Osvaldo Reyes Meneses
+        </footer>
+    </body>
+</html>

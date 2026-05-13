@@ -14,6 +14,7 @@ def get_all_album(*, session: Session = Depends(get_session)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f'No media found')
     return album_db
 
+#Need to test, idfk how this withmedia works
 @router.get("/{slug}", response_model=AlbumWithMediaReturn)
 def get_detail_album(*, session: Session =  Depends(get_session), slug: str):
     album_db = session.exec(select(Album).where(Album.slug == slug)).one_or_none()
