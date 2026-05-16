@@ -1,0 +1,30 @@
+---
+interface Props {
+  link?: string;
+  // Puedes agregar una propiedad para el texto si no quieres que sea estático
+  text?: string; 
+}
+
+const { link, text = link } = Astro.props;
+
+// Si existe la propiedad 'link', se convierte en un enlace (a), de lo contrario es un botón (button)
+const Element = link ? "a" : "button";
+---
+
+<Element
+  href={link}
+  class="inline-block cursor-pointer bg-gradient-to-b from-principal-500 to-terciario-600 px-6 py-3 rounded-xl border-[1px] border-secundario text-secundario font-medium group text-center no-underline"
+>
+  <div class="relative overflow-hidden">
+    <p
+      class="group-hover:-translate-y-7 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]"
+    >
+      {text}
+    </p>
+    <p
+      class="absolute top-7 left-0 group-hover:top-0 duration-[1.125s] ease-[cubic-bezier(0.19,1,0.22,1)]"
+    >
+      {text}
+    </p>
+  </div>
+</Element>

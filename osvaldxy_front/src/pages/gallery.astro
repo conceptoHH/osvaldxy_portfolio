@@ -8,7 +8,7 @@ const allMedia = await response.json();
 
 <BaseLayout title="Photo Gallery">
     <div class="max-w-6xl mx-auto">
-        <h1 class="text-4xl font-extrabold text-gray-900 mb-8">Images</h1>
+        <h1 class="text-4xl font-extrabold text-secundario mb-8">Images</h1>
 
         <!-- Grid Layout -->
         <!-- The Grid Layout -->
@@ -18,7 +18,7 @@ const allMedia = await response.json();
                 allMedia.map((mediaItem) => (
                     <PhotoCard media={mediaItem} />
                 ))) : (
-                <div class="col-span-full text-center py-12 text-gray-500">
+                <div class="col-span-full text-center py-12 text-gray-100">
                     <p>No photos have been uploaded yet.</p>
                 </div>
             )}
