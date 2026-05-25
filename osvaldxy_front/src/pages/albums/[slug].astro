@@ -35,12 +35,12 @@ const album = await response.json();
 <BaseLayout title={album.name_album}>
     <div class="max-w-6xl mx-auto">
         <!-- Back Button -->
-        <a href="/albums" class="inline-block mb-6 text-blue-600 hover:text-blue-800 font-semibold">
+        <a href="/albums" class="inline-block mb-6 text-gray-100 hover:text-terciario font-semibold">
             &larr; Back to Albums
         </a>
 
-        <h1 class="text-4xl font-extrabold text-gray-900 mb-2">{album.name_album}</h1>
-        <p class="text-gray-500 mb-8">Viewing photos in this album</p>
+        <h1 class="text-4xl font-extrabold text-gray-100 mb-2">{album.name_album}</h1>
+        <p class="text-gray-100 mb-8">Viewing photos in this album</p>
         
         <!-- The Grid Layout for this specific album's photos -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">

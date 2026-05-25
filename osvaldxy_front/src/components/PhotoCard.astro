@@ -8,7 +8,7 @@ const backendUrl = "http://127.0.0.1:8000";
 ---
 
 <!-- 2. HTML & Tailwind Template -->
-<div class="bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow">
+<div class="bg-white border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-shadow photo-trigger" data-modal-target={'modal-' + media.id}>
     <!-- Display the image. We combine the backend URL with the path_url from your database -->
     <img 
         src={`${backendUrl}${media.path_url}`} 
@@ -22,3 +22,38 @@ const backendUrl = "http://127.0.0.1:8000";
         <p class="text-sm text-gray-500 capitalize">{media.type_media}</p>
     </div>
 </div>
+<!--Hidden Mode-->
+<div class="fixed inset-0 z-50 bg-black/90 hidden photo-modal" id={'modal-' + media.id}>
+    <img 
+        src={`${backendUrl}${media.path_url}`} 
+        alt={media.name_media} 
+        class="max-w-full max-h-[90vh] object-contain"
+    />
+</div>
+<script>
+
+    let triggers = document.querySelectorAll('.photo-trigger');
+    triggers.forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+            let modalTarget = trigger.getAttribute('data-modal-target');
+            if(!modalTarget) {
+                console.log('Error al cambiar el modal');
+            }
+            let mathcModal = document.getElementById(modalTarget);
+            mathcModal?.classList.remove('hidden');
+            mathcModal?.classList.add('flex');
+            mathcModal?.classList.add('items-center');
+            mathcModal?.classList.add('justify-center');
+        });
+    });
+
+    let hiddenModal = document.querySelectorAll('.photo-modal');
+    hiddenModal.forEach((hidden) => {
+        hidden.addEventListener('click', () => {
+            hidden.classList.add('hidden');
+            hidden.classList.remove('flex');
+            hidden.classList.remove('items-center');
+            hidden.classList.remove('justify-center');
+        });
+    });
+</script>
